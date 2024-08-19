@@ -5,7 +5,7 @@ import {
 } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, ethers } from "ethers";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
-
+import { useNavigate } from "react-router-dom";
 
 const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b"; 
 const commerceABI = [
@@ -350,7 +350,12 @@ const metadata = {
 const ethersConfig = defaultConfig({
   /*Required*/
   metadata,
-
+ auth: {
+      email: true, // default to true
+      socials: ['google', 'x', 'github'],
+      showWallets: true, // default to true
+      walletFeatures: true // default to true
+    },
   /*Optional*/
   enableEIP6963: true, // true by default
   enableInjected: true, // true by default
@@ -371,7 +376,7 @@ const ListProducts = () => {
 
      const { address, chainId, isConnected } = useWeb3ModalAccount();
      const { walletProvider } = useWeb3ModalProvider();
-
+const navigate = useNavigate();
 
        const [formData, setFormData] = useState({
          name: "",
@@ -407,21 +412,23 @@ const ListProducts = () => {
 console.log("hey");
            try{
           
-        //    const priceInWei = ethers.utils.parseEther(formData.price);
-        //const priceInWei = ethers.utils.parseEther(formData.price.toString());
-        //  console.log(priceInWei);
+        const priceInWei = ethers.parseEther(formData.price.toString());
+          
 
            const tx = await commerceContract.listProduct(
              formData.name,
              formData.description,
              formData.image,
              formData.category,
-             Number(formData.price),
+             priceInWei,
              formData.currency
            );
-
-           await tx.wait();
+          
+           console.log(priceInWei);
+          
+          await tx.wait();
            alert("Product listed successfully");
+           navigate("/marketplace");
          } catch (error) {
            console.log("Error listing product:", error);
          }
