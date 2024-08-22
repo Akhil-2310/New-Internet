@@ -468,13 +468,16 @@ useEffect(() => {
                 alt={product.name}
               />
               <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">{product.name}</div>
+                <div className="font-bold text-xl mb-2">{product.name.toUpperCase()}</div>
                 <p className="text-gray-700 text-base">
                   {product.description}
                 </p>
                 <p className="text-gray-900 font-bold">
                   {ethers.formatUnits(product.price.toString(), "ether")}{" "}
                   {product.currency.toUpperCase()}
+                </p>
+                <p className="text-gray-900 font-bold">
+                  {product.category.toUpperCase()}
                 </p>
                 <button
                   onClick={() => handlePurchase(product.id, product.price)}

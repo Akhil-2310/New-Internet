@@ -6,316 +6,318 @@ import {
 import { BrowserProvider, Contract, ethers } from "ethers";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
 import { useNavigate } from "react-router-dom";
+//import { PinataSDK } from "pinata";
+import axios from "axios"
+//import PinataUpload from "./PinataUpload";
 
-const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b"; 
+const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b";
 const commerceABI = [
-  
-    {
-      inputs: [
-        {
-          internalType: "string",
-          name: "_name",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "_description",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "_image",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "_category",
-          type: "string",
-        },
-        {
-          internalType: "uint256",
-          name: "_price",
-          type: "uint256",
-        },
-        {
-          internalType: "string",
-          name: "_currency",
-          type: "string",
-        },
-      ],
-      name: "listProduct",
-      outputs: [],
-      stateMutability: "nonpayable",
-      type: "function",
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          internalType: "uint256",
-          name: "id",
-          type: "uint256",
-        },
-        {
-          indexed: false,
-          internalType: "address",
-          name: "seller",
-          type: "address",
-        },
-        {
-          indexed: false,
-          internalType: "string",
-          name: "name",
-          type: "string",
-        },
-        {
-          indexed: false,
-          internalType: "string",
-          name: "description",
-          type: "string",
-        },
-        {
-          indexed: false,
-          internalType: "string",
-          name: "image",
-          type: "string",
-        },
-        {
-          indexed: false,
-          internalType: "string",
-          name: "category",
-          type: "string",
-        },
-        {
-          indexed: false,
-          internalType: "uint256",
-          name: "price",
-          type: "uint256",
-        },
-        {
-          indexed: false,
-          internalType: "string",
-          name: "currency",
-          type: "string",
-        },
-      ],
-      name: "ProductListed",
-      type: "event",
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          internalType: "uint256",
-          name: "id",
-          type: "uint256",
-        },
-        {
-          indexed: false,
-          internalType: "address",
-          name: "buyer",
-          type: "address",
-        },
-        {
-          indexed: false,
-          internalType: "address",
-          name: "seller",
-          type: "address",
-        },
-        {
-          indexed: false,
-          internalType: "uint256",
-          name: "price",
-          type: "uint256",
-        },
-        {
-          indexed: false,
-          internalType: "string",
-          name: "currency",
-          type: "string",
-        },
-      ],
-      name: "ProductPurchased",
-      type: "event",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "_id",
-          type: "uint256",
-        },
-      ],
-      name: "purchaseProduct",
-      outputs: [],
-      stateMutability: "payable",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "_id",
-          type: "uint256",
-        },
-      ],
-      name: "getProduct",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "id",
-          type: "uint256",
-        },
-        {
-          internalType: "address",
-          name: "seller",
-          type: "address",
-        },
-        {
-          internalType: "string",
-          name: "name",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "description",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "category",
-          type: "string",
-        },
-        {
-          internalType: "uint256",
-          name: "price",
-          type: "uint256",
-        },
-        {
-          internalType: "string",
-          name: "currency",
-          type: "string",
-        },
-        {
-          internalType: "bool",
-          name: "purchased",
-          type: "bool",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "getPurchasedProducts",
-      outputs: [
-        {
-          internalType: "uint256[]",
-          name: "",
-          type: "uint256[]",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [],
-      name: "productCount",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      name: "products",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "id",
-          type: "uint256",
-        },
-        {
-          internalType: "address payable",
-          name: "seller",
-          type: "address",
-        },
-        {
-          internalType: "string",
-          name: "name",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "description",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "image",
-          type: "string",
-        },
-        {
-          internalType: "string",
-          name: "category",
-          type: "string",
-        },
-        {
-          internalType: "uint256",
-          name: "price",
-          type: "uint256",
-        },
-        {
-          internalType: "string",
-          name: "currency",
-          type: "string",
-        },
-        {
-          internalType: "bool",
-          name: "purchased",
-          type: "bool",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
-    {
-      inputs: [
-        {
-          internalType: "address",
-          name: "",
-          type: "address",
-        },
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      name: "purchasedProducts",
-      outputs: [
-        {
-          internalType: "uint256",
-          name: "",
-          type: "uint256",
-        },
-      ],
-      stateMutability: "view",
-      type: "function",
-    },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_description",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_image",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_category",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "_currency",
+        type: "string",
+      },
+    ],
+    name: "listProduct",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "seller",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "image",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "category",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "currency",
+        type: "string",
+      },
+    ],
+    name: "ProductListed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "buyer",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "seller",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "currency",
+        type: "string",
+      },
+    ],
+    name: "ProductPurchased",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_id",
+        type: "uint256",
+      },
+    ],
+    name: "purchaseProduct",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_id",
+        type: "uint256",
+      },
+    ],
+    name: "getProduct",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "seller",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "category",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "currency",
+        type: "string",
+      },
+      {
+        internalType: "bool",
+        name: "purchased",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getPurchasedProducts",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "productCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "products",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "address payable",
+        name: "seller",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "description",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "image",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "category",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "currency",
+        type: "string",
+      },
+      {
+        internalType: "bool",
+        name: "purchased",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "purchasedProducts",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 
 // 1. Get projectId
@@ -350,12 +352,12 @@ const metadata = {
 const ethersConfig = defaultConfig({
   /*Required*/
   metadata,
- auth: {
-      email: true, // default to true
-      socials: ['google', 'x', 'github'],
-      showWallets: true, // default to true
-      walletFeatures: true // default to true
-    },
+  auth: {
+    email: true, // default to true
+    socials: ["google", "x", "github"],
+    showWallets: true, // default to true
+    walletFeatures: true, // default to true
+  },
   /*Optional*/
   enableEIP6963: true, // true by default
   enableInjected: true, // true by default
@@ -372,67 +374,140 @@ createWeb3Modal({
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
 
+// const pinata = new PinataSDK({
+//   pinataJwt:
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI3ZjliMTdhYi03M2JkLTRkNTktYmY1OC00YmYxYjMxMWI0ZGYiLCJlbWFpbCI6Im5hbmF2YXRpYWtoaWxAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiRlJBMSJ9LHsiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiTllDMSJ9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImRkMzQ3YjY5NmU4OTgxMzc4Y2Q3Iiwic2NvcGVkS2V5U2VjcmV0IjoiYWQxMmRiNDFjNjc0ODA4MzJlMWMxMzBjMmM2MzM4MzdmMWMyM2I1MmI1NTJkZDcwYjgxYjZmNGI4N2EyNmIwNSIsImV4cCI6MTc1NTgwMzcyOH0.j3cmVKtVKmAnV6pWembveHfEivZEkr-aEDwQ0m8BzQc",
+//   pinataGateway: "copper-occupational-turtle-123.mypinata.cloud",
+// });
+
 const ListProducts = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [ipfsHash, setIpfsHash] = useState("");
 
-     const { address, chainId, isConnected } = useWeb3ModalAccount();
-     const { walletProvider } = useWeb3ModalProvider();
-const navigate = useNavigate();
+  const { address, chainId, isConnected } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
+  const navigate = useNavigate();
 
-       const [formData, setFormData] = useState({
-         name: "",
-         description: "",
-         image: "",
-         category: "",
-         price: "",
-         currency: "",
-       });
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    image: "",
+    category: "",
+    price: "",
+    currency: "",
+  });
 
-       const handleChange = (e) => {
-         setFormData({
-           ...formData,
-           [e.target.name]: e.target.value,
-         });
-       };
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-       const handleSubmit = async (e) => {
-         e.preventDefault();
-         if (!walletProvider) {
-           alert("User not connected");
-           return;
-         }
+  //   const handleFileChange = (event) => {
+  //   setSelectedFile(event.target.files[0]);
+  // };
 
-         
-           const ethersProvider = new BrowserProvider(walletProvider);
-           const signer = await ethersProvider.getSigner();
-           const commerceContract = new Contract(
-             commerceContractAddress,
-             commerceABI,
-             signer
-           );
-console.log("hey");
-           try{
-          
-        const priceInWei = ethers.parseEther(formData.price.toString());
-          
+  // const handleSub = async (event) => {
+  //   event.preventDefault();
 
-           const tx = await commerceContract.listProduct(
-             formData.name,
-             formData.description,
-             formData.image,
-             formData.category,
-             priceInWei,
-             formData.currency
-           );
-          
-           console.log(priceInWei);
-          
-          await tx.wait();
-           alert("Product listed successfully");
-           navigate("/marketplace");
-         } catch (error) {
-           console.log("Error listing product:", error);
-         }
-       };
+  //   const formData = new FormData();
+  //   formData.append("file", selectedFile);
+
+  //   const apiKey = "dd347b696e8981378cd7";
+  //   const apiSecret =
+  //     "ad12db41c67480832e1c130c2c633837f1c23b52b552dd70b81b6f4b87a26b05";
+
+  //   try {
+  //     const response = await axios.post(
+  //       "https://api.pinata.cloud/pinning/pinFileToIPFS",
+  //       formData,
+  //       {
+  //         maxContentLength: "Infinity",
+  //         headers: {
+  //           "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+  //           pinata_api_key: apiKey,
+  //           pinata_secret_api_key: apiSecret,
+  //         },
+  //       }
+  //     );
+
+  //     setIpfsHash(response.data.IpfsHash);
+  //   } catch (error) {
+  //     console.error("Error uploading file:", error);
+  //   }
+  //};
+
+
+
+
+
+
+//   const handleFileChange = async (event) => {
+//     setFile(event.target.files[0]);
+//     console.log(file);
+//     const reader = new FileReader();
+//     reader.onloadend =  () => {
+//       // Convert the file to BlobPart[] format
+//       const arrayBuffer = reader.result;
+//       const uint8Array = new Uint8Array(arrayBuffer);
+//       const blobPartsArray = Array.from(uint8Array);
+
+//       setBlobParts(blobPartsArray);
+
+//       console.log("BlobPart[]:", blobPartsArray);
+//     };
+
+//     await reader.readAsArrayBuffer(file);
+// console.log("hey")
+//     const filee = new File([blobParts], "Testing.png");
+//     console.log("hey")
+//     const upload = await pinata.upload.file(filee);
+//     console.log(upload);
+//   };
+
+//   const handleUpload = async () => {
+//     if (!file) {
+//       alert("Please select a file first!");
+//       return;
+//     }
+//   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!walletProvider) {
+      alert("User not connected");
+      return;
+    }
+
+    const ethersProvider = new BrowserProvider(walletProvider);
+    const signer = await ethersProvider.getSigner();
+    const commerceContract = new Contract(
+      commerceContractAddress,
+      commerceABI,
+      signer
+    );
+    console.log("hey");
+    try {
+      const priceInWei = ethers.parseEther(formData.price.toString());
+
+      const tx = await commerceContract.listProduct(
+        formData.name,
+        formData.description,
+        formData.image,
+        formData.category,
+        priceInWei,
+        formData.currency
+      );
+
+      console.log(priceInWei);
+
+      await tx.wait();
+      alert("Product listed successfully");
+      navigate("/marketplace");
+    } catch (error) {
+      console.log("Error listing product:", error);
+    }
+  };
   return (
     <>
       <div>
@@ -453,7 +528,7 @@ console.log("hey");
           className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg"
         >
           <h2 className="text-2xl font-bold mb-6">List Your Product</h2>
-
+          
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Product Name
