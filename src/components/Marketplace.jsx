@@ -8,7 +8,7 @@ import {
 import { BrowserProvider, Contract, ethers } from "ethers";
 import { useNavigate } from "react-router-dom";
 
-const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b";
+const commerceContractAddress = "0xFfB4cab6E0aFC6D0aE99293a863D4a36d7152C7D";
 const commerceABI = [
   {
     inputs: [
@@ -38,9 +38,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "_currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "listProduct",
@@ -95,9 +95,9 @@ const commerceABI = [
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "ProductListed",
@@ -132,9 +132,9 @@ const commerceABI = [
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "ProductPurchased",
@@ -194,9 +194,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
       {
         internalType: "bool",
@@ -279,9 +279,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
       {
         internalType: "bool",
@@ -382,6 +382,15 @@ createWeb3Modal({
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
 
+const WETHAddress = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";
+const USDTAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
+const DAIAddress = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
+
+const ERC20ABI = [
+  "function balanceOf(address) view returns (uint256)",
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function transfer(address recipient, uint256 amount) returns (bool)",
+];
 
 const Marketplace = () => {
 const { address, chainId, isConnected } = useWeb3ModalAccount();
@@ -430,16 +439,31 @@ useEffect(() => {
      signer
    );
 
-   try {
-     const tx = await commerceContract.purchaseProduct(id, {
-       value: price,
-     });
-     await tx.wait();
-     alert("Product purchased successfully");
-     navigate("/my"); // Navigate to user's purchases page or refresh the marketplace
-   } catch (error) {
-     console.log("Error purchasing product:", error);
-   }
+    try {
+      if (currency === WETHAddress) {
+        // Handle WETH purchase
+        const tx = await commerceContract.purchaseProduct(id, {
+          value: price,
+        });
+        await tx.wait();
+      } else {
+        // Handle ERC20 purchase (USDT/DAI)
+        const ERC20Contract = new Contract(currency, ERC20ABI, signer);
+        const approveTx = await ERC20Contract.approve(
+          commerceContractAddress,
+          price
+        );
+        await approveTx.wait();
+
+        const purchaseTx = await commerceContract.purchaseProduct(id);
+        await purchaseTx.wait();
+      }
+
+      alert("Product purchased successfully");
+      navigate("/my"); // Navigate to user's purchases page or refresh the marketplace
+    } catch (error) {
+      console.log("Error purchasing product:", error);
+    }
  };
 
   return (

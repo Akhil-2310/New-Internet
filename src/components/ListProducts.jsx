@@ -8,7 +8,7 @@ import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
 import { useNavigate } from "react-router-dom";
 
 
-const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b";
+const commerceContractAddress = "0xFfB4cab6E0aFC6D0aE99293a863D4a36d7152C7D";
 const commerceABI = [
   {
     inputs: [
@@ -38,9 +38,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "_currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "listProduct",
@@ -95,9 +95,9 @@ const commerceABI = [
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "ProductListed",
@@ -132,9 +132,9 @@ const commerceABI = [
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "ProductPurchased",
@@ -194,9 +194,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
       {
         internalType: "bool",
@@ -279,9 +279,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
       {
         internalType: "bool",
@@ -381,6 +381,10 @@ createWeb3Modal({
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
 
+const WETHAddress = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";
+const USDTAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
+const DAIAddress = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
+
 
 
 const ListProducts = () => {
@@ -462,7 +466,7 @@ const ListProducts = () => {
           className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg"
         >
           <h2 className="text-2xl font-bold mb-6">List Your Product</h2>
-          
+
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Product Name
@@ -552,9 +556,9 @@ const ListProducts = () => {
               <option value="" disabled>
                 Select Currency
               </option>
-              <option value="eth">ETH/WETH</option>
-              <option value="usdt">USDT</option>
-              <option value="dai">DAI</option>
+              <option value={WETHAddress}>WETH</option>
+              <option value={USDTAddress}>USDT</option>
+              <option value={DAIAddress}>DAI</option>
             </select>
           </div>
 

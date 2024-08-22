@@ -3,7 +3,7 @@ import { useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { BrowserProvider, Contract, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
-const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b";
+const commerceContractAddress = "0xFfB4cab6E0aFC6D0aE99293a863D4a36d7152C7D";
 const commerceABI = [
   {
     inputs: [
@@ -33,9 +33,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "_currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "listProduct",
@@ -90,9 +90,9 @@ const commerceABI = [
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "ProductListed",
@@ -127,9 +127,9 @@ const commerceABI = [
       },
       {
         indexed: false,
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
     ],
     name: "ProductPurchased",
@@ -189,9 +189,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
       {
         internalType: "bool",
@@ -274,9 +274,9 @@ const commerceABI = [
         type: "uint256",
       },
       {
-        internalType: "string",
+        internalType: "address",
         name: "currency",
-        type: "string",
+        type: "address",
       },
       {
         internalType: "bool",
