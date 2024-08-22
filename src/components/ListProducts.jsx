@@ -6,9 +6,7 @@ import {
 import { BrowserProvider, Contract, ethers } from "ethers";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
 import { useNavigate } from "react-router-dom";
-//import { PinataSDK } from "pinata";
-import axios from "axios"
-//import PinataUpload from "./PinataUpload";
+
 
 const commerceContractAddress = "0xd0F797a7A539556D6CF386d8133678b0dF12590b";
 const commerceABI = [
@@ -340,6 +338,15 @@ const sepolia = {
     "https://eth-sepolia.g.alchemy.com/v2/_O9yEvZei4_BPgQbLawL754cAfubB8jr", // Replace with your Infura project ID
 };
 
+
+const polygonPos = {
+  chainId: 137,
+  name: "Polygon (PoS)",
+  currency: "MATIC",
+  explorerUrl: "https://polygonscan.com",
+  rpcUrl: "https://polygon-rpc.com", // You can replace this with an Alchemy, Infura, or another custom RPC URL
+};
+
 // 3. Create a metadata object
 const metadata = {
   name: "My Website",
@@ -369,20 +376,14 @@ const ethersConfig = defaultConfig({
 // 5. Create a AppKit instance
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet, sepolia],
+  chains: [mainnet, sepolia, polygonPos],
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
 
-// const pinata = new PinataSDK({
-//   pinataJwt:
-//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI3ZjliMTdhYi03M2JkLTRkNTktYmY1OC00YmYxYjMxMWI0ZGYiLCJlbWFpbCI6Im5hbmF2YXRpYWtoaWxAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiRlJBMSJ9LHsiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjEsImlkIjoiTllDMSJ9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImRkMzQ3YjY5NmU4OTgxMzc4Y2Q3Iiwic2NvcGVkS2V5U2VjcmV0IjoiYWQxMmRiNDFjNjc0ODA4MzJlMWMxMzBjMmM2MzM4MzdmMWMyM2I1MmI1NTJkZDcwYjgxYjZmNGI4N2EyNmIwNSIsImV4cCI6MTc1NTgwMzcyOH0.j3cmVKtVKmAnV6pWembveHfEivZEkr-aEDwQ0m8BzQc",
-//   pinataGateway: "copper-occupational-turtle-123.mypinata.cloud",
-// });
+
 
 const ListProducts = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [ipfsHash, setIpfsHash] = useState("");
 
   const { address, chainId, isConnected } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
@@ -404,74 +405,7 @@ const ListProducts = () => {
     });
   };
 
-  //   const handleFileChange = (event) => {
-  //   setSelectedFile(event.target.files[0]);
-  // };
 
-  // const handleSub = async (event) => {
-  //   event.preventDefault();
-
-  //   const formData = new FormData();
-  //   formData.append("file", selectedFile);
-
-  //   const apiKey = "dd347b696e8981378cd7";
-  //   const apiSecret =
-  //     "ad12db41c67480832e1c130c2c633837f1c23b52b552dd70b81b6f4b87a26b05";
-
-  //   try {
-  //     const response = await axios.post(
-  //       "https://api.pinata.cloud/pinning/pinFileToIPFS",
-  //       formData,
-  //       {
-  //         maxContentLength: "Infinity",
-  //         headers: {
-  //           "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
-  //           pinata_api_key: apiKey,
-  //           pinata_secret_api_key: apiSecret,
-  //         },
-  //       }
-  //     );
-
-  //     setIpfsHash(response.data.IpfsHash);
-  //   } catch (error) {
-  //     console.error("Error uploading file:", error);
-  //   }
-  //};
-
-
-
-
-
-
-//   const handleFileChange = async (event) => {
-//     setFile(event.target.files[0]);
-//     console.log(file);
-//     const reader = new FileReader();
-//     reader.onloadend =  () => {
-//       // Convert the file to BlobPart[] format
-//       const arrayBuffer = reader.result;
-//       const uint8Array = new Uint8Array(arrayBuffer);
-//       const blobPartsArray = Array.from(uint8Array);
-
-//       setBlobParts(blobPartsArray);
-
-//       console.log("BlobPart[]:", blobPartsArray);
-//     };
-
-//     await reader.readAsArrayBuffer(file);
-// console.log("hey")
-//     const filee = new File([blobParts], "Testing.png");
-//     console.log("hey")
-//     const upload = await pinata.upload.file(filee);
-//     console.log(upload);
-//   };
-
-//   const handleUpload = async () => {
-//     if (!file) {
-//       alert("Please select a file first!");
-//       return;
-//     }
-//   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!walletProvider) {

@@ -339,6 +339,15 @@ const sepolia = {
     "https://eth-sepolia.g.alchemy.com/v2/_O9yEvZei4_BPgQbLawL754cAfubB8jr", // Replace with your Infura project ID
 };
 
+const polygonPos = {
+  chainId: 137,
+  name: "Polygon (PoS)",
+  currency: "MATIC",
+  explorerUrl: "https://polygonscan.com",
+  rpcUrl: "https://polygon-rpc.com", // You can replace this with an Alchemy, Infura, or another custom RPC URL
+};
+
+
 // 3. Create a metadata object
 const metadata = {
   name: "My Website",
@@ -368,7 +377,7 @@ const ethersConfig = defaultConfig({
 // 5. Create a AppKit instance
 createWeb3Modal({
   ethersConfig,
-  chains: [mainnet, sepolia],
+  chains: [mainnet, sepolia, polygonPos],
   projectId,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
