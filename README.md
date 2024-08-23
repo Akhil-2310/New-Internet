@@ -4,9 +4,12 @@
 
 ## Demo Video Link
 [Listing Product](https://www.loom.com/share/cf8a783ef96c47f8b20fa8a771486783)
+
 [Buying Product and Swap](https://www.loom.com/share/527499d487564262837a25beb480c0fd)
+
 [Thanksgiving](https://www.loom.com/share/d1464f2a7a3c46a2a9052d4a2288347d)
 
+## What is it all about?
 Web3 is a newer concept but is very useful. Though, the starting point for the same is pretty tough and therefore we need to change this. People are afraid to start using web3 in day to day life but we as an ecosystem, need to change this narrativve and bring more and more people to web3 space. 
 
 - How can we do it? 
