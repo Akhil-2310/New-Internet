@@ -1,6 +1,6 @@
 ## Build The new Internet
 
-##DeComm
+## DeComm
 
 Web3 is a newer concept but is very useful. Though, the starting point for the same is pretty tough and therefore we need to change this. People are afraid to start using web3 in day to day life but we as an ecosystem, need to change this narrativve and bring more and more people to web3 space. 
 
