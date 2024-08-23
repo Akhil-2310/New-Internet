@@ -5,7 +5,7 @@ import {
   useWeb3ModalProvider,
   useWeb3ModalAccount,
 } from "@web3modal/ethers/react";
-import { BrowserProvider, Contract, ethers } from "ethers";
+import { BrowserProvider, Contract, ethers, parseUnits } from "ethers";
 import { useNavigate } from "react-router-dom";
 
 const commerceContractAddress = "0xFfB4cab6E0aFC6D0aE99293a863D4a36d7152C7D";
@@ -319,8 +319,6 @@ const commerceABI = [
 ];
 
 
-
-
 // 1. Get projectId
 const projectId = "54c238d52f1218087ae00073282addb8";
 
@@ -346,7 +344,8 @@ const polygonPos = {
   name: "Polygon (PoS)",
   currency: "MATIC",
   explorerUrl: "https://polygonscan.com",
-  rpcUrl: "https://polygon-rpc.com", // You can replace this with an Alchemy, Infura, or another custom RPC URL
+  rpcUrl:
+    "https://polygon-mainnet.g.alchemy.com/v2/_O9yEvZei4_BPgQbLawL754cAfubB8jr", // You can replace this with an Alchemy, Infura, or another custom RPC URL
 };
 
 
@@ -387,6 +386,12 @@ createWeb3Modal({
 const WETHAddress = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";
 const USDTAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
 const DAIAddress = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
+
+const currencyDetails = {
+  "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": { name: "USDT", decimals: 6 },
+  "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063": { name: "DAI", decimals: 18 },
+  "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": { name: "WETH", decimals: 18 },
+};
 
 const ERC20ABI = [
   "function balanceOf(address) view returns (uint256)",
@@ -435,6 +440,14 @@ useEffect(() => {
 }, [walletProvider]);
 
 
+const formatPrice = (price, curr) => {
+  const details = currencyDetails[curr];
+  if (!details) return "Unknown Currency";
+
+  const formattedPrice = ethers.formatUnits(price, details.decimals);
+  return formattedPrice;
+};
+
  const handlePurchase = async (id, price, currency) => {
    if (!walletProvider) {
      alert("User not connected");
@@ -450,31 +463,40 @@ useEffect(() => {
    );
 
     try {
-      if (currency === WETHAddress) {
-        // Handle WETH purchase
-        const tx = await commerceContract.purchaseProduct(id, {
-          value: price,
-        });
-        await tx.wait();
-      } else {
-        // Handle ERC20 purchase (USDT/DAI)
-        const ERC20Contract = new Contract(currency, ERC20ABI, signer);
-        const approveTx = await ERC20Contract.approve(
+         //Handle ERC20 purchase (USDT/DAI)
+        let adjustedPrice;
+        if (currency === "0xc2132D05D31c914a87C6611C10748AEb04B58e8F") {
+          // USDT (6 decimals)
+          adjustedPrice = ethers.parseUnits(price.toString(), 6);
+          const ERC20Contract = new Contract(currency, ERC20ABI, signer);
+          const approveTx = await ERC20Contract.approve(
           commerceContractAddress,
-          price
+          adjustedPrice
         );
         await approveTx.wait();
 
         const purchaseTx = await commerceContract.purchaseProduct(id);
         await purchaseTx.wait();
-      }
+        } else {
+          // DAI/WETH (18 decimals)
+          adjustedPrice = ethers.parseUnits(price.toString(), 18);
+          const ERC20Contract = new Contract(currency, ERC20ABI, signer);
+        const approveTx = await ERC20Contract.approve(
+          commerceContractAddress,
+          adjustedPrice
+        );
+        await approveTx.wait();
 
+        const purchaseTx = await commerceContract.purchaseProduct(id);
+        await purchaseTx.wait();
+        }        
+      }
+      catch(error){
+        console.log(error);
+      };
       alert("Product purchased successfully");
       navigate("/my"); // Navigate to user's purchases page or refresh the marketplace
-    } catch (error) {
-      console.log("Error purchasing product:", error);
-    }
- };
+    } 
 
   return (
     <>
@@ -512,7 +534,7 @@ useEffect(() => {
                 </div>
                 <p className="text-gray-700 text-base">{product.description}</p>
                 <p className="text-gray-900 font-bold">
-                  {ethers.formatUnits(product.price.toString(), "ether")}{" "}
+                  {formatPrice(product.price, product.currency)}{" "}
                   {currencyMapping[product.currency] || "Unknown Currency"}
                 </p>
                 <p className="text-gray-900 font-bold">
@@ -533,6 +555,6 @@ useEffect(() => {
       </div>
     </>
   );
-};
+}
 
 export default Marketplace;

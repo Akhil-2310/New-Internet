@@ -344,7 +344,8 @@ const polygonPos = {
   name: "Polygon (PoS)",
   currency: "MATIC",
   explorerUrl: "https://polygonscan.com",
-  rpcUrl: "https://polygon-rpc.com", // You can replace this with an Alchemy, Infura, or another custom RPC URL
+  rpcUrl:
+    "https://polygon-mainnet.g.alchemy.com/v2/_O9yEvZei4_BPgQbLawL754cAfubB8jr", // You can replace this with an Alchemy, Infura, or another custom RPC URL
 };
 
 // 3. Create a metadata object
@@ -426,7 +427,16 @@ const ListProducts = () => {
     );
     console.log("hey");
     try {
-      const priceInWei = ethers.parseEther(formData.price.toString());
+      let priceInWei;
+      if (formData.currency === "0xc2132D05D31c914a87C6611C10748AEb04B58e8F") {
+        // USDT has 6 decimals
+        priceInWei = ethers.parseUnits(formData.price.toString(), 6);
+      } else {
+        // DAI/WETH has 18 decimals
+        priceInWei = ethers.parseUnits(formData.price.toString(), 18);
+      }
+
+      console.log(formData);
 
       const tx = await commerceContract.listProduct(
         formData.name,

@@ -84,7 +84,6 @@ contract Commerce {
     function purchaseProduct(uint256 _id) public payable {
         Product storage _product = products[_id];
         require(_product.id > 0 && _product.id <= productCount, "Product does not exist");
-        //require(msg.value >= _product.price, "Insufficient funds sent");
         require(!_product.purchased, "Product already purchased");
         require(_product.seller != msg.sender, "Seller cannot buy their own product");
 
@@ -96,7 +95,7 @@ contract Commerce {
 
         purchasedProducts[msg.sender].push(_id);
 
-        emit ProductPurchased(_id, msg.sender, _product.seller, _product.price,_product.currency);
+        emit ProductPurchased(_id, msg.sender, _product.seller, _product.price, _product.currency);
     }
 
     // Function to get product details

@@ -26,7 +26,7 @@ const Home = () => {
             <div>
               <h1 className="text-5xl font-bold">DeComm</h1>
               <p className="py-6">
-                Consumers are the kings! Mass adoption is the focus!
+                Consumers are the kings! Crypto Mass adoption is the focus!
               </p>
             </div>
           </div>

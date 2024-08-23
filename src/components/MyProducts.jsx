@@ -313,7 +313,25 @@ const commerceABI = [
   },
 ];
 
+
+const currencyDetails = {
+  "0xc2132D05D31c914a87C6611C10748AEb04B58e8F": { name: "USDT", decimals: 6 },
+  "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063": { name: "DAI", decimals: 18 },
+  "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619": { name: "WETH", decimals: 18 },
+};
+
+const WETHAddress = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";
+const USDTAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F";
+const DAIAddress = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063";
+
+
 const MyProducts = () => {
+
+  const currencyMapping = {
+    [WETHAddress]: "WETH",
+    [USDTAddress]: "USDT",
+    [DAIAddress]: "DAI",
+  };
 
    const { walletProvider } = useWeb3ModalProvider();
    const [purchasedProducts, setPurchasedProducts] = useState([]);
@@ -342,9 +360,20 @@ const MyProducts = () => {
 
      loadPurchasedProducts();
    }, [walletProvider]);
+
+
+   const formatPrice = (price, curr) => {
+     const details = currencyDetails[curr];
+     if (!details) return "Unknown Currency";
+
+     const formattedPrice = ethers.formatUnits(price, details.decimals);
+     return formattedPrice;
+   };
+
+
   return (
     <>
-    <div>
+      <div>
         <div className="navbar bg-base-100">
           <div className="flex-1">
             <a className="btn btn-ghost text-xl">DeComm</a>
@@ -383,8 +412,8 @@ const MyProducts = () => {
                     {product.description}
                   </p>
                   <p className="text-gray-900 font-bold">
-                    {ethers.formatUnits(product.price.toString(), "ether")}{" "}
-                    {product.currency.toUpperCase()}
+                    {formatPrice(product.price, product.currency)}{" "}
+                    {currencyMapping[product.currency] || "Unknown Currency"}
                   </p>
                 </div>
               </div>
@@ -395,7 +424,7 @@ const MyProducts = () => {
         )}
       </div>
     </>
-  )
+  );
 };
 
 export default MyProducts;
