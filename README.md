@@ -1,6 +1,4 @@
-## Build The new Internet
-
-## DeComm
+## DeComm 
 
 ## Demo Video Link
 [Listing Product](https://www.loom.com/share/cf8a783ef96c47f8b20fa8a771486783)
